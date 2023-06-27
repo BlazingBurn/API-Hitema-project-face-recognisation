@@ -1,23 +1,29 @@
-package com.hitema.MaxAirain.APIHitemaprojectfacerecognisation;
+package com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.InputStream;
-import java.io.DataOutputStream;
-import java.io.BufferedInputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
 import java.nio.charset.StandardCharsets;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-public class ImageUpload {
-    public static String getImageIdAPI(File fileToUpload, InputStream inputStream) throws IOException {
-        String credentialsToEncode = "acc_fc81f6b73424897" + ":" + "3b921616b281767b67869984281106cc";
+import javax.imageio.ImageIO;
+
+@Service
+public class ImageService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageService.class);
+
+    @Value("${spring.secret.immaga}")
+    private String credentialsToEncode;
+
+    public String getFaceIdAPI(String filename, InputStream inputStream) throws IOException {
         String basicAuth = Base64.getEncoder().encodeToString(credentialsToEncode.getBytes(StandardCharsets.UTF_8));
 
         String endpoint = "/faces/detections?return_face_id=1";
@@ -41,7 +47,7 @@ public class ImageUpload {
         DataOutputStream request = new DataOutputStream(connection.getOutputStream());
 
         request.writeBytes(twoHyphens + boundary + crlf);
-        request.writeBytes("Content-Disposition: form-data; name=\"image\";filename=\"" + fileToUpload.getName() + "\"" + crlf);
+        request.writeBytes("Content-Disposition: form-data; name=\"image\";filename=\"" + filename + "\"" + crlf);
         request.writeBytes(crlf);
 
 
@@ -70,7 +76,7 @@ public class ImageUpload {
         responseStreamReader.close();
 
         String response = stringBuilder.toString();
-        System.out.println(response);
+        LOGGER.info(response);
 
         responseStream.close();
         connection.disconnect();
@@ -84,10 +90,28 @@ public class ImageUpload {
             faceId = jsonNode.get("result").get("faces").get(0).get("face_id").asText();
 
         } catch (Exception e) {
+            LOGGER.error("ImageService failed during json parsing => get faceId from json response failed");
             e.printStackTrace();
         }
 
         return faceId;
 
+    }
+
+    // Conversion base64 to image
+    public InputStream Base64ToInputStream(String data) throws IOException {
+
+        // Split after "," to take only the encode part
+        String base64Image = data.split(",")[1];
+
+        // Read the bas64 and transform it into a byte array
+        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
+
+        // Create the image and put it inside a OutputStream
+        BufferedImage image2BufferedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(image2BufferedImage, "jpeg", outputStream);
+
+        return new ByteArrayInputStream(outputStream.toByteArray());
     }
 }

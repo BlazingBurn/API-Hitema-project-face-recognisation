@@ -1,7 +1,11 @@
-package com.hitema.MaxAirain.APIHitemaprojectfacerecognisation;
+package com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,16 +15,21 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class FaceRecognition {
+@Service
+public class FaceRecognitionService {
 
-    public static int faceRecognition(String id1, String id2) throws IOException {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FaceRecognitionService.class);
 
-        String credentialsToEncode = "acc_fc81f6b73424897" + ":" + "3b921616b281767b67869984281106cc";
+    @Value("${spring.secret.immaga}")
+    private String credentialsToEncode;
+
+    public int faceRecognition(String id1, String id2) throws IOException {
+
         String basicAuth = Base64.getEncoder().encodeToString(credentialsToEncode.getBytes(StandardCharsets.UTF_8));
 
         String endpoint_url = "https://api.imagga.com/v2/faces/similarity/";
 
-// These are example face IDs, they won't work. Generate your own using the /faces/detections endpoint.
+        // These are example face IDs, they won't work. Generate your own using the /faces/detections endpoint.
         String face_id = id1;
         String second_face_id = id2;
 
@@ -32,8 +41,8 @@ public class FaceRecognition {
 
         int responseCode = connection.getResponseCode();
 
-        System.out.println("\nSending 'GET' request to URL : " + url);
-        System.out.println("Response Code : " + responseCode);
+        LOGGER.info("\nSending 'GET' request to URL : " + url);
+        LOGGER.info("Response Code : " + responseCode);
 
         BufferedReader connectionInput = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
@@ -41,7 +50,7 @@ public class FaceRecognition {
 
         connectionInput.close();
 
-        System.out.println(jsonResponse);
+        LOGGER.info(jsonResponse);
 
         int score = 0;
 
@@ -52,6 +61,7 @@ public class FaceRecognition {
             score = jsonNode.get("result").get("score").intValue();
 
         } catch (Exception e) {
+            LOGGER.error("FaceRecognition failed during json parsing => get score from json response failed");
             e.printStackTrace();
         }
 
