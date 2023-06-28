@@ -10,6 +10,7 @@ import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.UserFormDTO;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,9 @@ public class UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
     public static final String COL_NAME="user";
 
+    @Autowired
+    ReservationService reservationService;
+
     public String create(UserFormDTO user) throws ExecutionException, InterruptedException {
 
         LocalDateTime timestamp = LocalDateTime.now();
@@ -32,6 +36,9 @@ public class UserService {
         DocumentReference documentReference = dbFireStore.collection(COL_NAME).document(); // Generate a new document reference without specifying the document ID
         String userId = documentReference.getId(); // Get the generated document ID
         user.setUserId(userId); // Set the document ID as the userId field in the UserFormDTO object
+
+        String reservationId = reservationService.initReservation(userId);
+        user.setReservationId(reservationId);
 
         ApiFuture<WriteResult> writeResultApiFuture = documentReference.set(user);
 
@@ -69,15 +76,21 @@ public class UserService {
         // Check if document exist
         if (documentSnapshot.exists()) {
             LOGGER.info("Document " + user.getUserId() + " exist");
-            dateinscription = documentSnapshot.getDate("dateinscription");
-            picture = documentSnapshot.getString("picture");
-            reservationId = documentSnapshot.getString("reservationId");
-            user.setDateinscription(dateinscription);
-            user.setReservationId(reservationId);
+
+            if (user.getDateinscription() == null) {
+                dateinscription = documentSnapshot.getDate("dateinscription");
+                user.setDateinscription(dateinscription);
+            }
 
             if (user.getPicture().isEmpty()) {
+                picture = documentSnapshot.getString("picture");
                 assert picture != null;
                 user.setPicture(picture);
+            }
+
+            if (user.getReservationId().isEmpty()) {
+                reservationId = documentSnapshot.getString("reservationId");
+                user.setReservationId(reservationId);
             }
 
         } else {
@@ -91,12 +104,12 @@ public class UserService {
 
         User userUpdated = new User();
         userUpdated.setUserId(user.getUserId());
-        userUpdated.setPicture(picture);
+        userUpdated.setPicture(user.getPicture());
         userUpdated.setRole(user.getRole());
         userUpdated.setFirstname(user.getFirstname());
         userUpdated.setLastname(user.getLastname());
-        userUpdated.setDateinscription(dateinscription);
-        userUpdated.setReservationId(reservationId);
+        userUpdated.setDateinscription(user.getDateinscription());
+        userUpdated.setReservationId(user.getReservationId());
 
         return userUpdated;
     }
