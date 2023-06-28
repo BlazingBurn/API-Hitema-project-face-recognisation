@@ -23,25 +23,4 @@ public class ApiHitemaProjectFaceRecognisationApplication {
 		SpringApplication.run(ApiHitemaProjectFaceRecognisationApplication.class, args);
 	}
 
-//	public void demo() throws IOException {
-//		URL url = Resources.getResource("imageTestFront.txt");
-//		String data = Resources.toString(url, StandardCharsets.UTF_8);
-//		// Conversion base64 to image
-//		String base64Image = data.split(",")[1];
-//		byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
-//		BufferedImage image2BufferedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
-//		// Write the image to a file
-//		File outputFile = new File("image1.jpeg");
-//		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//		ImageIO.write(image2BufferedImage, "jpeg", outputStream);
-//		InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-//		String id1 = ImageService.getImageIdAPI(outputFile, inputStream);
-//
-//		File fileToUpload = new File("src/main/resources/image5Test.jpg");
-//		inputStream = new FileInputStream(fileToUpload);
-//		String id2 = ImageService.getImageIdAPI(fileToUpload, inputStream);
-//		int score = FaceRecognitionService.faceRecognition(id1, id2);
-//		LOGGER.info(String.valueOf(score));
-//	}
-
 }

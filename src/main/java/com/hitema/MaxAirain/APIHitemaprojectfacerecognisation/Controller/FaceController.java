@@ -1,7 +1,6 @@
 package com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Controller;
 
-import com.google.common.io.Resources;
-import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.UserReturnDTO;
+import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.UserFaceReturnDTO;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Service.FaceRecognitionService;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,12 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @Tag(name = "Face recognition")
 @RestController
@@ -60,7 +54,7 @@ public class FaceController {
     @Operation(summary = "Send a boolean if the score based on the compatibility is high")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
     @GetMapping
-    public ResponseEntity<UserReturnDTO> faceRecognitionProcessus(@RequestPart(value = "face", required = true) MultipartFile file) {
+    public ResponseEntity<UserFaceReturnDTO> faceRecognitionProcessus(@RequestPart(value = "face", required = true) MultipartFile file) {
 
         try {
             LOGGER.info("FaceController - Start the processus to find a face and connect the user");
@@ -86,7 +80,7 @@ public class FaceController {
 //            LOGGER.info("Le meilleur score obtenu est " + score);
 
 //            UserReturnDTO dto = new UserReturnDTO(isSimilar, score);
-            UserReturnDTO dto = new UserReturnDTO();
+            UserFaceReturnDTO dto = new UserFaceReturnDTO();
             return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
