@@ -23,7 +23,7 @@ public class FaceRecognitionService {
     @Value("${spring.secret.immaga}")
     private String credentialsToEncode;
 
-    public int faceRecognition(String id1, String id2) throws IOException {
+    public Double faceRecognition(String id1, String id2) throws IOException {
 
         String basicAuth = Base64.getEncoder().encodeToString(credentialsToEncode.getBytes(StandardCharsets.UTF_8));
 
@@ -52,13 +52,13 @@ public class FaceRecognitionService {
 
         LOGGER.info(jsonResponse);
 
-        int score = 0;
+        double score = 0;
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(jsonResponse);
 
-            score = jsonNode.get("result").get("score").intValue();
+            score = jsonNode.get("result").get("score").doubleValue();
 
         } catch (Exception e) {
             LOGGER.error("FaceRecognition failed during json parsing => get score from json response failed");

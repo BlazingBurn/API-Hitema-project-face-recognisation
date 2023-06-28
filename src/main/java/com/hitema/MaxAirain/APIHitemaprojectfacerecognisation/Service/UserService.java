@@ -1,12 +1,10 @@
 package com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Service;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.UserFormDTO;
+import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Model.Material;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -61,6 +61,29 @@ public class UserService {
         LOGGER.info("No user found for : " + userId);
         return null;
 
+    }
+
+    public List<User> getAllUser() throws ExecutionException, InterruptedException {
+
+        Firestore dbFireStore = FirestoreClient.getFirestore();
+
+        CollectionReference collectionRef = dbFireStore.collection(COL_NAME);
+        List<User> users = new ArrayList<>();
+
+        collectionRef.listDocuments().forEach(documentRef -> {
+            try {
+                DocumentSnapshot documentSnapshot = documentRef.get().get();
+                if (documentSnapshot.exists()) {
+                    User user = documentSnapshot.toObject(User.class);
+                    users.add(user);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                LOGGER.error("An error occur during the process : " + e.getMessage());
+            }
+        });
+
+        LOGGER.info("Nb Users found : " + users.size());
+        return users;
     }
 
     public User updateUser(UserFormDTO user) throws ExecutionException, InterruptedException {
