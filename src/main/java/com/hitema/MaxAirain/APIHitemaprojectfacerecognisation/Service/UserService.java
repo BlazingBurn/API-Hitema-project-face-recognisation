@@ -58,13 +58,35 @@ public class UserService {
 
     public User updateUser(UserFormDTO user) throws ExecutionException, InterruptedException {
         Firestore dbFireStore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> collectionApiFuture = dbFireStore.collection(COL_NAME).document(user.getUserId()).set(user);
-        LOGGER.info("User updated : " + collectionApiFuture.get().getUpdateTime());
+
+        DocumentReference documentReference = dbFireStore.collection(COL_NAME).document(user.getUserId());
+        ApiFuture<DocumentSnapshot> documentSnapshotFuture = documentReference.get();
+        DocumentSnapshot documentSnapshot = documentSnapshotFuture.get();
+
+        Date dateinscription;
+        String picture;
+        // Check if document exist
+        if (documentSnapshot.exists()) {
+            LOGGER.info("Document " + user.getUserId() + " exist");
+            dateinscription = documentSnapshot.getDate("dateinscription");
+            picture = documentSnapshot.getString("picture");
+            user.setDateinscription(dateinscription);
+        } else {
+            // Document not exist
+            LOGGER.info("Document " + user.getUserId() + " not exist");
+            return null;
+        }
+
+        ApiFuture<WriteResult> writeResultApiFuture = documentReference.set(user);
+        LOGGER.info("User updated : " + writeResultApiFuture.get().getUpdateTime());
 
         User userUpdated = new User();
+        userUpdated.setUserId(user.getUserId());
+        userUpdated.setPicture(picture);
         userUpdated.setRole(user.getRole());
         userUpdated.setFirstname(user.getFirstname());
         userUpdated.setLastname(user.getLastname());
+        userUpdated.setDateinscription(dateinscription);
 
         return userUpdated;
     }

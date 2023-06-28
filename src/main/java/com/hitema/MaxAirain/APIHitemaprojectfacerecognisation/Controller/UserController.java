@@ -3,9 +3,11 @@ package com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Controller;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.CreatedReturnDTO;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.UserFormDTO;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.UserReturnDTO;
+import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Enums.EntityEnum;
+import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Exception.UserNotFoundException;
+import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Exception.UserUpdateNoUserException;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Mapper.DTOMapper;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Model.User;
-import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Service.FaceRecognitionService;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Service.UserService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -50,6 +52,11 @@ public class UserController {
     @GetMapping("/get")
     public ResponseEntity<UserReturnDTO> getUser(@RequestParam String userId) throws ExecutionException, InterruptedException {
         User user = userService.getUser(userId);
+
+        if (user == null) {
+            throw new UserNotFoundException(EntityEnum.USER.toString(), Long.parseLong(userId));
+        }
+
         UserReturnDTO dto = dtoMapper.mapToUserReturnDTO(user);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
@@ -60,7 +67,19 @@ public class UserController {
     @ApiResponses(value = { @ApiResponse(responseCode = "20O", description = "OK"), @ApiResponse(responseCode = "404", description = "Not Found") })
     @PutMapping("/update")
     public ResponseEntity<UserReturnDTO> updateUser(@RequestBody UserFormDTO user) throws ExecutionException, InterruptedException {
+
+        if (user.getUserId().isEmpty()) {
+            throw new UserUpdateNoUserException(EntityEnum.USER.toString());
+        }
+
         User userUpdated = userService.updateUser(user);
+
+        if (userUpdated == null) {
+            throw new UserNotFoundException(EntityEnum.USER.toString(), Long.parseLong(user.getUserId()));
+        }
+
+        LOGGER.info("UserUpdated : " + userUpdated);
+
         UserReturnDTO dto = dtoMapper.mapToUserReturnDTO(userUpdated);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
