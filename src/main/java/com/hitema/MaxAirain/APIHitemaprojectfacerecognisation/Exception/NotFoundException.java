@@ -3,11 +3,11 @@ package com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Exception;
 import lombok.Data;
 
 @Data
-public class UserNotFoundException extends RuntimeException {
+public class NotFoundException extends RuntimeException {
 
     private String code;
 
-    public UserNotFoundException(String entity, Long id){
+    public NotFoundException(String entity, Long id){
         super(String.format("%s with id %d not found",entity, id));
         this.code = entity.toUpperCase() + "-NOT-FOUND";
     }

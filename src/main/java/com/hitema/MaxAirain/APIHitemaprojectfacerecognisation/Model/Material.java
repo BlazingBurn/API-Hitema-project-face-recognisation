@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 public class Material {
 
-    private String materiel_id;
+    private String materielId;
     private String name;
-    private int quantity_A;
-    private int quantity_T;
+    private int quantityA;
+    private int quantityT;
 
 }

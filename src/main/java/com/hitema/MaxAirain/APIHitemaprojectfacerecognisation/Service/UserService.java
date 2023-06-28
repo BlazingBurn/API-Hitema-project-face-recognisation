@@ -46,10 +46,10 @@ public class UserService {
         ApiFuture<DocumentSnapshot> documentSnapshotApiFuture = documentReference.get();
         DocumentSnapshot documentSnapshot = documentSnapshotApiFuture.get();
         User user;
-        LOGGER.info("User found for : " + userId);
         if (documentSnapshot.exists()) {
+            LOGGER.info("User found for : " + userId);
             user = documentSnapshot.toObject(User.class);
-                    return user;
+            return user;
         }
         LOGGER.info("No user found for : " + userId);
         return null;

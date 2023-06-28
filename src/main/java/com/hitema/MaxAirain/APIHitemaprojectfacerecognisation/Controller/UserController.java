@@ -4,8 +4,8 @@ import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.CreatedReturnD
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.UserFormDTO;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.UserReturnDTO;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Enums.EntityEnum;
-import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Exception.UserNotFoundException;
-import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Exception.UserUpdateNoUserException;
+import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Exception.NotFoundException;
+import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Exception.UpdateNoIdException;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Mapper.DTOMapper;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Model.User;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Service.UserService;
@@ -54,7 +54,7 @@ public class UserController {
         User user = userService.getUser(userId);
 
         if (user == null) {
-            throw new UserNotFoundException(EntityEnum.USER.toString(), Long.parseLong(userId));
+            throw new NotFoundException(EntityEnum.USER.toString(), Long.parseLong(userId));
         }
 
         UserReturnDTO dto = dtoMapper.mapToUserReturnDTO(user);
@@ -69,13 +69,13 @@ public class UserController {
     public ResponseEntity<UserReturnDTO> updateUser(@RequestBody UserFormDTO user) throws ExecutionException, InterruptedException {
 
         if (user.getUserId().isEmpty()) {
-            throw new UserUpdateNoUserException(EntityEnum.USER.toString());
+            throw new UpdateNoIdException(EntityEnum.USER.toString());
         }
 
         User userUpdated = userService.updateUser(user);
 
         if (userUpdated == null) {
-            throw new UserNotFoundException(EntityEnum.USER.toString(), Long.parseLong(user.getUserId()));
+            throw new NotFoundException(EntityEnum.USER.toString(), Long.parseLong(user.getUserId()));
         }
 
         LOGGER.info("UserUpdated : " + userUpdated);
@@ -93,8 +93,5 @@ public class UserController {
         userService.deleteUser(userId);
         return new ResponseEntity<>("User deleted", HttpStatus.OK);
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> testGetEndpoint() { return ResponseEntity.ok("Test Get Endpoint is Working"); }
 
 }
