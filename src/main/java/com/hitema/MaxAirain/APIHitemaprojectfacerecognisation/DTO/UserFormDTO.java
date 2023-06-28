@@ -26,5 +26,6 @@ public class UserFormDTO {
 
     private Date dateinscription;
 
+    private String reservationId;
 
 }

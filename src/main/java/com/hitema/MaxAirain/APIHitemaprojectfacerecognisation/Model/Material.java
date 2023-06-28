@@ -12,4 +12,13 @@ public class Material {
     private int quantityA;
     private int quantityT;
 
+    @Override
+    public String toString() {
+        return "Material{" +
+                "name='" + name + '\'' +
+                " quantityA=" + quantityA +
+                " quantityT=" + quantityT +
+                '}';
+    }
+
 }

@@ -4,17 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
-public class User {
+public class Reservation {
 
-    private String userId;
-    private String firstname;
-    private String lastname;
-    private String picture;
-    private String role;
-    private Date dateinscription;
     private String reservationId;
+    private String userId;
+    private List<String> materiels;
 
 }

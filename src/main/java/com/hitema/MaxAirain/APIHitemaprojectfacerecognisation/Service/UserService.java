@@ -65,12 +65,21 @@ public class UserService {
 
         Date dateinscription;
         String picture;
+        String reservationId;
         // Check if document exist
         if (documentSnapshot.exists()) {
             LOGGER.info("Document " + user.getUserId() + " exist");
             dateinscription = documentSnapshot.getDate("dateinscription");
             picture = documentSnapshot.getString("picture");
+            reservationId = documentSnapshot.getString("reservationId");
             user.setDateinscription(dateinscription);
+            user.setReservationId(reservationId);
+
+            if (user.getPicture().isEmpty()) {
+                assert picture != null;
+                user.setPicture(picture);
+            }
+
         } else {
             // Document not exist
             LOGGER.info("Document " + user.getUserId() + " not exist");
@@ -87,6 +96,7 @@ public class UserService {
         userUpdated.setFirstname(user.getFirstname());
         userUpdated.setLastname(user.getLastname());
         userUpdated.setDateinscription(dateinscription);
+        userUpdated.setReservationId(reservationId);
 
         return userUpdated;
     }

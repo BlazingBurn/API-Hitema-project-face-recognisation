@@ -1,10 +1,7 @@
 package com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Service;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.MaterialFormDTO;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.UserFormDTO;
@@ -16,8 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -40,6 +36,31 @@ public class MaterialService {
         }
         LOGGER.info("No user found for : " + materialId);
         return null;
+
+    }
+
+    public List<Material> getAllMaterial() {
+
+        Firestore dbFireStore = FirestoreClient.getFirestore();
+
+        CollectionReference collectionRef = dbFireStore.collection(COL_NAME);
+        List<Material> materials = new ArrayList<>();
+
+        collectionRef.listDocuments().forEach(documentRef -> {
+            try {
+                DocumentSnapshot documentSnapshot = documentRef.get().get();
+                if (documentSnapshot.exists()) {
+                    Material material = documentSnapshot.toObject(Material.class);
+                    materials.add(material);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                LOGGER.error("An error occur during the process : " + e.getMessage());
+            }
+        });
+
+        LOGGER.info("Nb materials found : " + materials.size());
+        LOGGER.info("Materials found : " + materials);
+        return materials;
 
     }
 
@@ -75,5 +96,4 @@ public class MaterialService {
 
         return materialUpdated;
     }
-
 }

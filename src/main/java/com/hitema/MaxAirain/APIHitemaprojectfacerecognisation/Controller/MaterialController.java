@@ -1,6 +1,7 @@
 package com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Controller;
 
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.MaterialFormDTO;
+import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.MaterialListReturnDTO;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.DTO.MaterialReturnDTO;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Enums.EntityEnum;
 import com.hitema.MaxAirain.APIHitemaprojectfacerecognisation.Exception.NotFoundException;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Tag(name = "Material controller")
@@ -46,6 +48,18 @@ public class MaterialController {
         }
 
         MaterialReturnDTO dto = dtoMapper.mapToMaterialReturnDTO(material);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    /**
+     * Get all materials
+     */
+    @ApiResponses(value = { @ApiResponse(responseCode = "20O", description = "OK"), @ApiResponse(responseCode = "404", description = "Not Found") })
+    @GetMapping("/getAll")
+    public ResponseEntity<MaterialListReturnDTO> getAllMaterial() throws ExecutionException, InterruptedException {
+        List<Material> materials = materialService.getAllMaterial();
+
+        MaterialListReturnDTO dto = dtoMapper.mapToMaterialListReturnDTO(materials);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
