@@ -19,6 +19,6 @@ public class UserReturnDTO {
     private String lastname;
     private String role;
     private Date dateinscription;
-    private String Reservation;
+    private String reservationId;
 
 }

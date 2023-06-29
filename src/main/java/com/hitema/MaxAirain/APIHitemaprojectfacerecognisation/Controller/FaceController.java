@@ -64,11 +64,11 @@ public class FaceController {
             String idFace_db_list;
             Map<String, Double> score = new HashMap<>();
             for (int i = 0; i < users.size(); i++) {
-                LOGGER.info("FaceController - Start the comparaison");
+                LOGGER.info("FaceController - Start the comparaison for user " + users.get(i).getUserId());
 
                 idFace_db_list = imageService.getFaceIdAPI("face_comparing", inputStreamsFacesDB.get(i));
                 score.put(users.get(i).getUserId(), faceRecognitionService.faceRecognition(idFace_compared, idFace_db_list));
-
+                Thread.sleep(1000);
             }
 
             List<Map.Entry<String, Double>> sortedList = new ArrayList<>(score.entrySet());
