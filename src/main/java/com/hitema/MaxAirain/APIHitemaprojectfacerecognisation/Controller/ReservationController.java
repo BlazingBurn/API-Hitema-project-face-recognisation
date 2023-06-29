@@ -65,7 +65,7 @@ public class ReservationController {
      * Update a reservation
      */
     @ApiResponses(value = { @ApiResponse(responseCode = "20O", description = "OK"), @ApiResponse(responseCode = "404", description = "Not Found") })
-    @PutMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<ReservationReturnDTO> updateReservation(@RequestBody ReservationFormUpdateDTO reservation) throws ExecutionException, InterruptedException {
 
         if (reservation.getReservationId().isEmpty()) {

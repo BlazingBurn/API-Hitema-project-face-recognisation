@@ -65,7 +65,7 @@ public class UserController {
      * Update a user
      */
     @ApiResponses(value = { @ApiResponse(responseCode = "20O", description = "OK"), @ApiResponse(responseCode = "404", description = "Not Found") })
-    @PutMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<UserReturnDTO> updateUser(@RequestBody UserFormDTO user) throws ExecutionException, InterruptedException {
 
         if (user.getUserId().isEmpty()) {

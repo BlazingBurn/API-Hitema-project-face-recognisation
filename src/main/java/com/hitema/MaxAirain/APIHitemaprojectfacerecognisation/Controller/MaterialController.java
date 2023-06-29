@@ -67,7 +67,7 @@ public class MaterialController {
      * Update a user
      */
     @ApiResponses(value = { @ApiResponse(responseCode = "20O", description = "OK"), @ApiResponse(responseCode = "404", description = "Not Found") })
-    @PutMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<MaterialReturnDTO> updateMaterial(@RequestBody MaterialFormDTO materialFormDTO) throws ExecutionException, InterruptedException {
 
         if (materialFormDTO.getMaterialId().isEmpty()) {
