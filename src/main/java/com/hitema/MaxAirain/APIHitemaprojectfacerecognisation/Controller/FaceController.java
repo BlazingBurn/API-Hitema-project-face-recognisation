@@ -42,7 +42,7 @@ public class FaceController {
      */
     @Operation(summary = "Send a boolean if the score based on the compatibility is high")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "OK")})
-    @GetMapping
+    @PostMapping
     public ResponseEntity<UserFaceReturnDTO> faceRecognitionProcessus(@RequestBody FaceFormDTO face) {
 
         try {
