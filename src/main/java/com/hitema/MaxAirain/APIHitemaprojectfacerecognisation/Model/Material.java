@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class Material {
 
-    private String materielId;
+    private String materialId;
     private String name;
     private int quantityA;
     private int quantityT;
@@ -15,7 +15,8 @@ public class Material {
     @Override
     public String toString() {
         return "Material{" +
-                "name='" + name + '\'' +
+                "materielId= " + materialId +
+                " name='" + name + '\'' +
                 " quantityA=" + quantityA +
                 " quantityT=" + quantityT +
                 '}';
