@@ -29,7 +29,7 @@ public class DTOMapper {
 
     public MaterialReturnDTO mapToMaterialReturnDTO(Material material) {
         return new MaterialReturnDTO(//
-                material.getMaterielId(), //
+                material.getMaterialId(), //
                 material.getName(), //
                 material.getQuantityA(), //
                 material.getQuantityT()

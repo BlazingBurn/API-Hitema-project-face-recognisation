@@ -79,7 +79,7 @@ public class MaterialController {
         Material materialUpdated = materialService.updateMaterial(materialFormDTO);
 
         if (materialUpdated == null) {
-            throw new NotFoundException(EntityEnum.USER.toString(), Long.parseLong(materialUpdated.getMaterielId()));
+            throw new NotFoundException(EntityEnum.USER.toString(), Long.parseLong(materialUpdated.getMaterialId()));
         }
 
         LOGGER.info("MaterialUpdated : " + materialUpdated.toString());
