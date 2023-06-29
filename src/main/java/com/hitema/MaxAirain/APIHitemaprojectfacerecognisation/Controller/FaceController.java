@@ -84,7 +84,7 @@ public class FaceController {
             UserFaceReturnDTO dto;
 
             // If score > 80 recognition is good
-            if (bestScore.getValue() > 80) {
+            if (bestScore.getValue() > 70) {
                 dto = new UserFaceReturnDTO(isSimilar, bestScore.getValue(), bestScore.getKey());
             } else {
                 dto = new UserFaceReturnDTO(!isSimilar, bestScore.getValue(), null);
