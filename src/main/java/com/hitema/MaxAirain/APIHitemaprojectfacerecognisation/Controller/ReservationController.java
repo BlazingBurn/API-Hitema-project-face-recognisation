@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.ExecutionException;
 
-@Tag(name = "User controller")
+@Tag(name = "Reservation controller")
 @RestController
 @RequestMapping("/api/v1/reservations")
 public class ReservationController {
