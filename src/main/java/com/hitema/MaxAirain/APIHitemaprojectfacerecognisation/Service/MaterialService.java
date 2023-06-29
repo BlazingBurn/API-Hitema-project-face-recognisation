@@ -89,7 +89,7 @@ public class MaterialService {
         LOGGER.info("Material updated : " + writeResultApiFuture.get().getUpdateTime());
 
         Material materialUpdated = new Material();
-        materialUpdated.setMaterielId(material.getMaterialId());
+        materialUpdated.setMaterialId(material.getMaterialId());
         materialUpdated.setName(material.getName());
         materialUpdated.setQuantityA(material.getQuantityA());
         materialUpdated.setQuantityT(material.getQuantityT());
